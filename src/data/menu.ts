@@ -7,190 +7,207 @@ export type MenuItem = {
   id: string;
   name: string;
   description: string;
-  category: MenuCategory;
   price: number;
   unit: MenuUnit;
   tags: DietaryTag[];
   featured: boolean;
-  image?: string;
   illustration: string;
-  isExtra?: boolean;
+  image?: string;
   startingAt?: boolean;
 };
 
-export const menu: MenuItem[] = [
-  {
-    id: "jollof-rice",
-    name: "Jollof Rice",
-    description: "Smoky, tomato-rich rice with pepper on request.",
-    category: "Rice",
-    price: 2500,
-    unit: "portion",
-    illustration: "jollof",
-    tags: ["V"],
-    featured: true,
-  },
-  {
-    id: "fried-rice",
-    name: "Fried Rice",
-    description: "Colourful vegetables folded through savoury rice.",
-    category: "Rice",
-    price: 2800,
-    unit: "portion",
-    illustration: "fried-rice",
-    tags: ["V"],
-    featured: true,
-  },
-  {
-    id: "half-and-half",
-    name: "Jollof and Fried Rice",
-    description: "Half-and-half, for when one favourite is not enough.",
-    category: "Rice",
-    price: 3000,
-    unit: "portion",
-    illustration: "jollof",
-    tags: ["V"],
-    featured: true,
-  },
+export type MenuCategoryData = {
+  name: MenuCategory;
+  description: string;
+  items: MenuItem[];
+  extras?: MenuItem[];
+};
+
+export const SAMPLE_EXTRA_PRICES = {
+  chicken: 1800,
+  beef: 2000,
+  egg: 600,
+  friedPlantain: 1000,
+  salad: 800,
+};
+
+const riceExtras: MenuItem[] = [
   {
     id: "chicken",
     name: "Chicken",
-    description: "A hearty side for your rice.",
-    category: "Rice",
-    price: 1800,
-    unit: "portion",
-    illustration: "cutlery",
+    description: "A hearty side for your plate.",
+    price: SAMPLE_EXTRA_PRICES.chicken,
+    unit: "piece",
     tags: [],
     featured: false,
-    isExtra: true,
+    illustration: "cutlery",
   },
   {
-    id: "fish",
-    name: "Fish",
-    description: "Add fish to your plate.",
-    category: "Rice",
-    price: 2000,
-    unit: "portion",
-    illustration: "cutlery",
+    id: "beef",
+    name: "Beef",
+    description: "A savoury piece to go with your plate.",
+    price: SAMPLE_EXTRA_PRICES.beef,
+    unit: "piece",
     tags: [],
     featured: false,
-    isExtra: true,
+    illustration: "cutlery",
+  },
+  {
+    id: "egg",
+    name: "Egg",
+    description: "Add an egg to your plate.",
+    price: SAMPLE_EXTRA_PRICES.egg,
+    unit: "piece",
+    tags: ["E"],
+    featured: false,
+    illustration: "cutlery",
   },
   {
     id: "fried-plantain",
     name: "Fried Plantain",
     description: "Sweet plantain, fried until golden.",
-    category: "Rice",
-    price: 1000,
+    price: SAMPLE_EXTRA_PRICES.friedPlantain,
     unit: "portion",
-    illustration: "plantain",
     tags: ["V"],
     featured: false,
-    isExtra: true,
+    illustration: "plantain",
   },
   {
     id: "salad",
     name: "Salad",
     description: "A cool, crisp side for your plate.",
-    category: "Rice",
-    price: 800,
+    price: SAMPLE_EXTRA_PRICES.salad,
     unit: "portion",
-    illustration: "cutlery",
     tags: ["V"],
     featured: false,
-    isExtra: true,
-  },
-  {
-    id: "stir-fried-spaghetti",
-    name: "Stir-Fried Spaghetti",
-    description: "Tossed with vegetables and a little savoury heat.",
-    category: "Spaghetti",
-    price: 2500,
-    unit: "portion",
-    illustration: "spaghetti",
-    tags: ["S"],
-    featured: true,
-  },
-  {
-    id: "cake",
-    name: "Cake",
-    description: "A soft piece for your tea break.",
-    category: "Cakes",
-    price: 1500,
-    unit: "piece",
-    illustration: "cake-piece",
-    tags: ["E", "D"],
-    featured: true,
-  },
-  {
-    id: "cupcake",
-    name: "Cupcake",
-    description: "A little cake with a generous finish.",
-    category: "Cakes",
-    price: 1000,
-    unit: "piece",
-    illustration: "cupcake",
-    tags: ["E", "D"],
-    featured: false,
-  },
-  {
-    id: "whole-cake",
-    name: "Whole Cake",
-    description: "Made to order. Share your date and design for a quote.",
-    category: "Cakes",
-    price: 25000,
-    unit: "piece",
-    illustration: "whole-cake",
-    tags: ["E", "D"],
-    featured: false,
-    startingAt: true,
-  },
-  {
-    id: "bottled-water-50cl",
-    name: "Bottled Water 50cl",
-    description: "Chilled bottled water.",
-    category: "Drinks",
-    price: 500,
-    unit: "bottle",
-    illustration: "water",
-    tags: [],
-    featured: false,
-  },
-  {
-    id: "bottled-water-75cl",
-    name: "Bottled Water 75cl",
-    description: "Chilled bottled water.",
-    category: "Drinks",
-    price: 800,
-    unit: "bottle",
-    illustration: "water",
-    tags: [],
-    featured: false,
-  },
-  {
-    id: "soft-drink",
-    name: "Soft Drink",
-    description: "A bottled soft drink with your meal.",
-    category: "Drinks",
-    price: 800,
-    unit: "bottle",
-    illustration: "soft-drink",
-    tags: [],
-    featured: false,
+    illustration: "cutlery",
   },
 ];
 
-export const categories: {
-  name: MenuCategory;
-  description: string;
-  illustration: string;
-}[] = [
-  { name: "Rice", description: "A good plate starts here.", illustration: "jollof" },
+export const categories: MenuCategoryData[] = [
+  {
+    name: "Rice",
+    description: "A good plate starts here.",
+    items: [
+      {
+        id: "jollof-rice",
+        name: "Jollof Rice",
+        description: "Smoky, tomato-rich rice with pepper on request.",
+        price: 2500,
+        unit: "portion",
+        tags: ["V"],
+        featured: true,
+        illustration: "jollof",
+      },
+      {
+        id: "fried-rice",
+        name: "Fried Rice",
+        description: "Colourful vegetables folded through savoury rice.",
+        price: 2800,
+        unit: "portion",
+        tags: ["V"],
+        featured: true,
+        illustration: "fried-rice",
+      },
+    ],
+    extras: riceExtras,
+  },
   {
     name: "Spaghetti",
     description: "Tossed hot, with a little pepper if you like.",
-    illustration: "spaghetti",
+    items: [
+      {
+        id: "stir-fried-spaghetti",
+        name: "Stir-Fried Spaghetti",
+        description: "Tossed with vegetables and a little savoury heat.",
+        price: 2500,
+        unit: "portion",
+        tags: ["S"],
+        featured: true,
+        illustration: "spaghetti",
+      },
+    ],
+    extras: riceExtras.filter((item) => ["chicken", "beef", "egg"].includes(item.id)),
   },
-  { name: "Cakes", description: "A sweet finish, any day of the week.", illustration: "cake-piece" },
-  { name: "Drinks", description: "Something cool beside your plate.", illustration: "water" },
+  {
+    name: "Cakes",
+    description: "A sweet finish, any day of the week.",
+    items: [
+      {
+        id: "cake",
+        name: "Cake",
+        description: "A soft piece for your tea break.",
+        price: 1500,
+        unit: "piece",
+        tags: ["E", "D"],
+        featured: true,
+        illustration: "cake-piece",
+      },
+      {
+        id: "cupcake",
+        name: "Cupcake",
+        description: "A little cake with a generous finish.",
+        price: 1000,
+        unit: "piece",
+        tags: ["E", "D"],
+        featured: false,
+        illustration: "cupcake",
+      },
+      {
+        id: "whole-cake",
+        name: "Whole Cake",
+        description: "Made to order. Share your date and design for a quote.",
+        price: 25000,
+        unit: "piece",
+        tags: ["E", "D"],
+        featured: false,
+        illustration: "whole-cake",
+        startingAt: true,
+      },
+    ],
+  },
+  {
+    name: "Drinks",
+    description: "Something cool beside your plate.",
+    items: [
+      {
+        id: "bottled-water-50cl",
+        name: "Bottled Water 50cl",
+        description: "Chilled bottled water.",
+        price: 500,
+        unit: "bottle",
+        tags: [],
+        featured: false,
+        illustration: "water",
+      },
+      {
+        id: "bottled-water-75cl",
+        name: "Bottled Water 75cl",
+        description: "Chilled bottled water.",
+        price: 800,
+        unit: "bottle",
+        tags: [],
+        featured: false,
+        illustration: "water",
+      },
+      {
+        id: "soft-drink",
+        name: "Soft Drink",
+        description: "A bottled soft drink with your meal.",
+        price: 800,
+        unit: "bottle",
+        tags: [],
+        featured: false,
+        illustration: "soft-drink",
+      },
+    ],
+  },
 ];
+
+export const menu: MenuItem[] = Array.from(
+  new Map(
+    categories
+      .flatMap((category) => [...category.items, ...(category.extras ?? [])])
+      .map((item) => [item.id, item]),
+  ).values(),
+);

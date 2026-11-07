@@ -9,7 +9,6 @@ export type IllustrationName =
   | "cupcake"
   | "water"
   | "soft-drink"
-  | "pepper"
   | "plantain"
   | "cutlery"
   | "pot";
@@ -89,14 +88,6 @@ const artwork: Record<IllustrationName, ReactNode> = {
       <path d="M43 19h8" stroke="#1A1A17" strokeWidth="3" />
     </>
   ),
-  pepper: (
-    <>
-      <path d="M51 24c-7-12 1-18 7-17" fill="none" stroke="#1A1A17" strokeWidth="4" />
-      <path d="M48 22c-3 13-18 11-22 26-7 25 31 32 41 13 9-16-2-29-12-34z" fill="#00604E" />
-      <path d="M44 19c-3 13-18 11-22 26-7 25 31 32 41 13 9-16-2-29-12-34z" fill="#F4421F" stroke="#1A1A17" strokeWidth="3" />
-      <path d="M34 46c10-7 15 5 10 13m7-19c11 5 5 17 1 22" fill="none" stroke="#F8C84F" strokeWidth="3" />
-    </>
-  ),
   plantain: (
     <>
       <path d="M21 61c4-26 35-40 58-26-12 29-34 40-58 26z" fill="#F4421F" />
@@ -133,7 +124,6 @@ const labels: Record<IllustrationName, string> = {
   cupcake: "Illustration of a cupcake",
   water: "Illustration of a bottled water",
   "soft-drink": "Illustration of a soft drink bottle",
-  pepper: "Illustration of a pepper",
   plantain: "Illustration of fried plantain",
   cutlery: "Illustration of a spoon and fork",
   pot: "Illustration of a cooking pot",

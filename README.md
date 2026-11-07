@@ -43,9 +43,9 @@ Current item ids:
 
 - `jollof-rice`
 - `fried-rice`
-- `half-and-half`
 - `chicken`
-- `fish`
+- `beef`
+- `egg`
 - `fried-plantain`
 - `salad`
 - `stir-fried-spaghetti`

@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { CartProvider, formatNaira, useCart } from "@/components/cart-context";
-import { Illustration, type IllustrationName } from "@/components/illustrations";
-import { FoodImage } from "@/components/food-image";
+import { Illustration } from "@/components/illustrations";
 import { MenuBoard } from "@/components/menu-board";
 import { TicketDrawer, TicketSummary } from "@/components/order-ticket";
 import { MenuFoodThumbnail, MenuItemControl } from "@/components/quantity-control";
 import { getWhatsAppUrl, site } from "@/config/site";
-import { menu, type MenuCategory } from "@/data/menu";
+import { categories, menu, type MenuCategory } from "@/data/menu";
 
-const categoryOrder: MenuCategory[] = ["Rice", "Spaghetti", "Cakes", "Drinks"];
 const schemaDays: Record<string, string> = {
   monday: "Monday",
   tuesday: "Tuesday",
@@ -54,7 +52,13 @@ function getStatus(now: Date) {
     : `CLOSED - opens ${formatBusinessTime(hours.open)}`;
 }
 
-function Header({ onOpenTicket }: { onOpenTicket: () => void }) {
+function Header({
+  onOpenTicket,
+  onSelectCategory,
+}: {
+  onOpenTicket: () => void;
+  onSelectCategory: (category: MenuCategory) => void;
+}) {
   const { itemCount } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [status, setStatus] = useState("CHECKING HOURS");
@@ -66,17 +70,17 @@ function Header({ onOpenTicket }: { onOpenTicket: () => void }) {
     return () => window.clearInterval(timer);
   }, []);
 
-  const links = [
-    ["Rice", "#rice"],
-    ["Spaghetti", "#spaghetti"],
-    ["Cakes", "#cakes"],
-    ["Drinks", "#drinks"],
-    ["Orders", "#orders"],
+  const links: { label: string; href: string; category?: MenuCategory }[] = [
+    { label: "Rice", href: "#rice", category: "Rice" },
+    { label: "Spaghetti", href: "#spaghetti", category: "Spaghetti" },
+    { label: "Cakes", href: "#cakes", category: "Cakes" },
+    { label: "Drinks", href: "#drinks", category: "Drinks" },
+    { label: "Orders", href: "#orders" },
   ];
 
   function orderNow() {
     if (itemCount > 0) onOpenTicket();
-    else document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" });
+    else onSelectCategory("Rice");
     setMenuOpen(false);
   }
 
@@ -98,8 +102,19 @@ function Header({ onOpenTicket }: { onOpenTicket: () => void }) {
         <span /><span /><span />
       </button>
       <nav aria-label="Main navigation" className={menuOpen ? "main-nav nav-open" : "main-nav"}>
-        {links.map(([label, href]) => (
-          <a href={href} key={label} onClick={() => setMenuOpen(false)}>{label}</a>
+        {links.map(({ label, href, category }) => (
+          <a
+            href={href}
+            key={label}
+            onClick={(event) => {
+              setMenuOpen(false);
+              if (!category) return;
+              event.preventDefault();
+              onSelectCategory(category);
+            }}
+          >
+            {label}
+          </a>
         ))}
         <span className="status-chip"><i aria-hidden="true" />{status}</span>
         <button className="button button-red header-order" onClick={orderNow} type="button">
@@ -127,27 +142,6 @@ function Hero() {
 
   return (
     <section aria-labelledby="hero-title" className="hero section-rule" id="home">
-      <div className="hero-art-grid" aria-label="A selection of illustrated 3CM dishes">
-        {site.heroTiles.map((tile, index) => {
-          const item = tile.itemId ? menu.find((entry) => entry.id === tile.itemId) : undefined;
-          return (
-            <div className={`hero-tile tile-${index + 1}`} key={tile.id ?? tile.itemId}>
-              {item || tile.image ? (
-                <FoodImage
-                  className="hero-tile-image"
-                  image={tile.image ?? item?.image}
-                  illustration={(tile.illustration || item?.illustration) as IllustrationName}
-                  name={item?.name ?? tile.label ?? "3CM food"}
-                />
-              ) : tile.id === "cooking" ? (
-                <span className="cooking-tile">No. 7<br />Cooking</span>
-              ) : (
-                <Illustration kind={tile.illustration as IllustrationName} />
-              )}
-            </div>
-          );
-        })}
-      </div>
       <div className="hero-copy">
         <div className="hero-date">{today}</div>
         <p className="eyebrow">- FRESHLY COOKED TODAY -</p>
@@ -185,20 +179,58 @@ function Marquee() {
   );
 }
 
-function MenuSection() {
+function MenuSection({
+  expanded,
+  openCategories,
+  onToggle,
+  onToggleCategory,
+}: {
+  expanded: boolean;
+  openCategories: Set<MenuCategory>;
+  onToggle: () => void;
+  onToggleCategory: (category: MenuCategory) => void;
+}) {
+  const intro = categories.find((category) => category.name === "Rice")?.description;
+
   return (
     <section aria-labelledby="menu-title" className="menu-section section-rule" id="menu">
       <div className="section-heading menu-section-heading">
         <div>
           <p className="eyebrow">- PICK YOUR PLATE -</p>
           <h2 className="green-heading" id="menu-title">The Whole Menu</h2>
-        </div>
-        <div aria-label="Dietary legend" className="menu-legend">
-          <span>S - Spicy</span><span>V - Vegetarian</span><span>E - Egg</span><span>D - Dairy</span>
+          {intro && <p className="menu-intro">{intro}</p>}
+          <button
+            aria-controls="menu-panel"
+            aria-expanded={expanded}
+            className="button button-red menu-toggle"
+            onClick={onToggle}
+            type="button"
+          >
+            {expanded ? "Hide menu" : "View menu"}
+          </button>
         </div>
       </div>
-      <div className="menu-grid">
-        {categoryOrder.map((category) => <MenuBoard category={category} key={category} />)}
+      <div
+        aria-hidden={!expanded}
+        className={`menu-panel ${expanded ? "menu-panel-expanded" : ""}`}
+        id="menu-panel"
+        inert={!expanded}
+      >
+        <div className="menu-panel-inner">
+          <div aria-label="Dietary legend" className="menu-legend">
+            <span>S - Spicy</span><span>V - Vegetarian</span><span>E - Egg</span><span>D - Dairy</span>
+          </div>
+          <div className="menu-grid">
+            {categories.map((category) => (
+              <MenuBoard
+                category={category}
+                expanded={openCategories.has(category.name)}
+                key={category.name}
+                onToggle={() => onToggleCategory(category.name)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -308,6 +340,34 @@ function Footer() {
 function Restaurant() {
   const { itemCount, total, toast, undo } = useCart();
   const [ticketOpen, setTicketOpen] = useState(false);
+  const [menuExpanded, setMenuExpanded] = useState(false);
+  const [openCategories, setOpenCategories] = useState<Set<MenuCategory>>(() => new Set());
+
+  function toggleMenu() {
+    setMenuExpanded((expanded) => !expanded);
+  }
+
+  function toggleCategory(category: MenuCategory) {
+    setOpenCategories((current) => {
+      const next = new Set(current);
+      if (next.has(category)) next.delete(category);
+      else next.add(category);
+      return next;
+    });
+  }
+
+  function selectCategory(category: MenuCategory) {
+    setMenuExpanded(true);
+    setOpenCategories((current) => new Set(current).add(category));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.setTimeout(() => {
+      const target = document.getElementById(category.toLowerCase());
+      if (!target) return;
+      const targetTop = target.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: targetTop, behavior: reducedMotion ? "auto" : "smooth" });
+    }, reducedMotion ? 0 : 380);
+  }
+
   const hours = Object.entries(site.openingHours).map(([day, range]) => ({
     "@type": "OpeningHoursSpecification",
     dayOfWeek: `https://schema.org/${schemaDays[day]}`,
@@ -328,11 +388,16 @@ function Restaurant() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd) }} />
-      <Header onOpenTicket={() => setTicketOpen(true)} />
+      <Header onOpenTicket={() => setTicketOpen(true)} onSelectCategory={selectCategory} />
       <main>
         <Hero />
         <Marquee />
-        <MenuSection />
+        <MenuSection
+          expanded={menuExpanded}
+          onToggle={toggleMenu}
+          onToggleCategory={toggleCategory}
+          openCategories={openCategories}
+        />
         <Favourites />
         <OrderAhead onOpenTicket={() => setTicketOpen(true)} />
         <PartyOrders />

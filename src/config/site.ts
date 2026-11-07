@@ -27,20 +27,6 @@ export const site = {
     "Pickup and delivery",
     "Order on WhatsApp",
   ],
-  heroTiles: [
-    { itemId: "jollof-rice", illustration: "jollof" },
-    { itemId: "fried-rice", illustration: "fried-rice" },
-    { itemId: "stir-fried-spaghetti", illustration: "spaghetti" },
-    { itemId: "cake", illustration: "cake-piece" },
-    { itemId: "whole-cake", illustration: "whole-cake" },
-    { itemId: "cupcake", illustration: "cupcake" },
-    { id: "cooking", illustration: "pot", label: "No. 7 Cooking" },
-    { itemId: "bottled-water-50cl", illustration: "water" },
-    { itemId: "soft-drink", illustration: "soft-drink" },
-    { id: "pepper", illustration: "pepper", label: "Pepper" },
-    { itemId: "fried-plantain", illustration: "plantain" },
-    { id: "cutlery", illustration: "cutlery", label: "Spoon and fork" },
-  ] as { id?: string; itemId?: string; illustration: string; label?: string; image?: string }[],
 };
 
 export function getWhatsAppUrl(message: string) {
